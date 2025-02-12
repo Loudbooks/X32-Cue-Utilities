@@ -5,22 +5,21 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
     if (output_directory not in os.listdir(".")):
         os.mkdir(output_directory)
 
-    df = pd.read_excel(xlsx_file, engine="openpyxl", skiprows=[i for i in range(skip_rows)])
+    data_frame = pd.read_excel(xlsx_file, engine="openpyxl", skiprows=[i for i in range(skip_rows)])
 
     first_integer_column = 1
 
-    for column in df.columns:
+    for column in data_frame.columns:
         if isinstance(column, (int, float)):
-            first_integer_column = df.columns.get_loc(column)
+            first_integer_column = data_frame.columns.get_loc(column)
             break
-            
 
-    snippet_numbers = df.columns[first_integer_column:]
+    snippet_numbers = data_frame.columns[first_integer_column:]
 
     for snippet in snippet_numbers:
-        snp_content = f'#2.0# "Q{snippet}"\n- stat 1\n'
+        snippet_content = f'#2.0# "Q{snippet}"\n- stat 1\n'
 
-        for _, row in df.iterrows():
+        for _, row in data_frame.iterrows():
             if not row.iloc[0]:
                 continue
 
@@ -29,12 +28,12 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
 
             mute_state = 0 if unmuted else 1
 
-            snp_content += f'- chan {mic_num}\n'
-            snp_content += f'  - mix 0 {mute_state}\n'
+            snippet_content += f'- chan {mic_num}\n'
+            snippet_content += f'  - mix 0 {mute_state}\n'
 
         file_name = f"Q{snippet}.snp"
         with open(f"{output_directory}/{file_name}", "w") as file:
-            file.write(snp_content)
+            file.write(snippet_content)
 
         print(f"Snippet '{snippet}' saved as {file_name}")
 
