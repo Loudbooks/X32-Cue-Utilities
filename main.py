@@ -38,10 +38,36 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory):
 
         print(f"Snippet '{snippet}' saved as {file_name}")
 
-def locate_xlsx_file():    
-    for file in os.listdir("."):
-        if file.endswith(".xlsx"):
-            return file
-    return None
+def locate_xlsx_files():
+    return [file for file in os.listdir(".") if file.endswith(".xlsx")]
 
-generate_snippets_from_xlsx(locate_xlsx_file(), "snippets")
+print("Locating xlsx files...")
+xlsx_files = locate_xlsx_files()
+
+if len(xlsx_files) == 0:
+    print("No xlsx files found in the current directory.")
+    exit()
+
+if len(xlsx_files) > 1:
+    print("Enter the number of the xlsx file you want to use:")
+
+    for i, xlsx_file in enumerate(xlsx_files):
+        print(f"{i + 1}. {xlsx_file}")
+
+    user_input = input()
+    try:
+        user_input = int(user_input)
+    except ValueError:
+        print("Invalid input.")
+        exit()
+
+    if user_input < 1 or user_input > len(xlsx_files):
+        print("Invalid input.")
+        exit()
+
+    xlsx_file = xlsx_files[user_input - 1]
+else:
+    xlsx_file = xlsx_files[0]
+
+print("Generating snippets...")
+generate_snippets_from_xlsx(xlsx_file, "output")
