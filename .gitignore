@@ -2,3 +2,4 @@ output/
 *.xlsx
 * Snippets/
 .DS_Store
+__pycache__/
