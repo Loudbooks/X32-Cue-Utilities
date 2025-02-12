@@ -2,6 +2,8 @@ import pandas as pd
 import os
 
 def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
+    file_name = xlsx_file.replace(".xlsx", "")
+
     if (output_directory not in os.listdir(".")):
         os.mkdir(output_directory)
 
@@ -16,7 +18,20 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
 
     snippet_numbers = data_frame.columns[first_integer_column:]
 
+    shw_content = '#4.0#\n'
+    shw_content += f'show "{file_name}" 0 0 0 60 0 0 0 0 0 0 "X32-Edit 4.00"\n'
+    
+    snippet_list = ""
+
+    cue_number = 0
     for snippet in snippet_numbers:
+        cue_number_formatted = str(snippet).replace(".", "").zfill(3)
+        cue_index_formatted = str(cue_number).zfill(3)
+
+        shw_content += f'cue/{cue_index_formatted} {cue_number_formatted} "" 0 -1 {cue_number} 0 1 0 0\n'
+
+        snippet_list += f'snippet/{cue_index_formatted} "Q{snippet}" 128 131071 0 0 1\n'
+
         snippet_content = f'#4.0# "Q{snippet}" 128 131071 0 0 1\n'
 
         for _, row in data_frame.iterrows():
@@ -36,6 +51,16 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
             file.write(snippet_content)
 
         print(f"Snippet '{snippet}' saved as {file_name}")
+
+        cue_number += 1
+
+    shw_content += snippet_list
+    
+    with open(f"{output_directory}/{file_name}.shw", "w") as file:
+        file.write(shw_content)
+
+    print(f"{file_name}.shw saved")
+
 
 def locate_xlsx_files():
     return [file for file in os.listdir(".") if file.endswith(".xlsx")]
