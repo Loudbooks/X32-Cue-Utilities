@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identifying_character="X"):
+def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identifying_character):
     show_file_name = xlsx_file.replace(".xlsx", "")
 
     if (output_directory not in os.listdir(".")):
@@ -46,7 +46,7 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
                 continue
 
             mic_num = int(row.iloc[0])
-            unmuted = pd.notna(row[snippet])
+            unmuted = pd.notna(row[snippet]) and row[snippet] == identifying_character
 
             mute_state = "ON" if unmuted else "OFF"
             formatted_snippet = str(mic_num).zfill(2)
