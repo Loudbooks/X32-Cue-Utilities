@@ -17,7 +17,7 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
     snippet_numbers = data_frame.columns[first_integer_column:]
 
     for snippet in snippet_numbers:
-        snippet_content = f'#2.0# "Q{snippet}"\n- stat 1\n'
+        snippet_content = f'#4.0# "Q{snippet}" 128 131071 0 0 1\n'
 
         for _, row in data_frame.iterrows():
             if not row.iloc[0]:
@@ -26,10 +26,10 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
             mic_num = int(row.iloc[0])
             unmuted = pd.notna(row[snippet])
 
-            mute_state = 0 if unmuted else 1
+            mute_state = "ON" if unmuted else "OFF"
+            formatted_snippet = str(mic_num).zfill(2)
 
-            snippet_content += f'- chan {mic_num}\n'
-            snippet_content += f'  - mix 0 {mute_state}\n'
+            snippet_content += f'/ch/{formatted_snippet}/mix/on {mute_state}\n'
 
         file_name = f"Q{snippet}.snp"
         with open(f"{output_directory}/{file_name}", "w") as file:
