@@ -1,7 +1,10 @@
 import pandas as pd
 import os
+import sys
 
 def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identifying_character):
+    print("")
+    
     show_file_name = xlsx_file.replace(".xlsx", "")
 
     if (output_directory not in os.listdir(".")):
@@ -22,6 +25,8 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
     shw_content += f'show "{show_file_name}" 0 0 0 60 0 0 0 0 0 0 "X32-Edit 4.00"\n'
     
     snippet_list = ""
+
+    total_cues = snippet_numbers.__len__()
 
     cue_number = 0
     for snippet in snippet_numbers:
@@ -57,8 +62,10 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
         with open(f"{output_directory}/{file_name}", "w") as file:
             file.write(snippet_content)
 
-        print("                                                                         ", end="\r", flush=True)
-        print(f"Snippet '{snippet}' saved as {file_name}", end="\r", flush=True)
+        percent = round(((cue_number + 1)/total_cues) * 100)
+
+        sys.stdout.write("\033[K")
+        print(f"Snippet '{snippet}' saved as {file_name}. ({percent}%)", end="\r", flush=True)
 
         cue_number += 1
 
@@ -67,7 +74,7 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
     with open(f"{output_directory}/{show_file_name}.shw", "w") as file:
         file.write(shw_content)
 
-    print(f"\n{show_file_name}.shw saved")
+    print(f"\n{show_file_name}.shw saved.")
 
 
 def locate_xlsx_files():
