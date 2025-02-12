@@ -57,7 +57,8 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
         with open(f"{output_directory}/{file_name}", "w") as file:
             file.write(snippet_content)
 
-        print(f"Snippet '{snippet}' saved as {file_name}")
+        print("                                                                         ", end="\r", flush=True)
+        print(f"Snippet '{snippet}' saved as {file_name}", end="\r", flush=True)
 
         cue_number += 1
 
@@ -66,7 +67,7 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identify
     with open(f"{output_directory}/{show_file_name}.shw", "w") as file:
         file.write(shw_content)
 
-    print(f"{show_file_name}.shw saved")
+    print(f"\n{show_file_name}.shw saved")
 
 
 def locate_xlsx_files():
@@ -124,5 +125,4 @@ identifying_character = input("Identifying character (X): ")
 if identifying_character == "":
     identifying_character = "X"
 
-print("Generating snippets...")
 generate_snippets_from_xlsx(xlsx_file, "output", skip_rows, identifying_character)
