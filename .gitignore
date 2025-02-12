@@ -1,3 +1,4 @@
 output/
 *.xlsx
 * Snippets/
+.DS_Store

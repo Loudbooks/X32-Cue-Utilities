@@ -1,11 +1,11 @@
 import pandas as pd
 import os
 
-def generate_snippets_from_xlsx(xlsx_file, output_directory):
+def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
     if (output_directory not in os.listdir(".")):
         os.mkdir(output_directory)
 
-    df = pd.read_excel(xlsx_file, engine="openpyxl", skiprows=[0])
+    df = pd.read_excel(xlsx_file, engine="openpyxl", skiprows=[i for i in range(skip_rows)])
 
     first_integer_column = 1
 
@@ -44,6 +44,7 @@ def locate_xlsx_files():
 print("Locating xlsx files...")
 xlsx_files = locate_xlsx_files()
 
+print("")
 if len(xlsx_files) == 0:
     print("No xlsx files found in the current directory.")
     exit()
@@ -69,5 +70,14 @@ if len(xlsx_files) > 1:
 else:
     xlsx_file = xlsx_files[0]
 
+print("")
+print("How many rows should be skipped at the beginning of the xlsx file?")
+skip_rows = input()
+try:
+    skip_rows = int(skip_rows)
+except ValueError:
+    print("Invalid input.")
+    exit()
+
 print("Generating snippets...")
-generate_snippets_from_xlsx(xlsx_file, "output")
+generate_snippets_from_xlsx(xlsx_file, "output", skip_rows)
