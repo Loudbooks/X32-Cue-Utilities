@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
+def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows, identifying_character="X"):
     show_file_name = xlsx_file.replace(".xlsx", "")
 
     if (output_directory not in os.listdir(".")):
@@ -72,7 +72,6 @@ def generate_snippets_from_xlsx(xlsx_file, output_directory, skip_rows):
 def locate_xlsx_files():
     return [file for file in os.listdir(".") if file.endswith(".xlsx")]
 
-print("Locating xlsx files...")
 xlsx_files = locate_xlsx_files()
 
 print("")
@@ -81,13 +80,18 @@ if len(xlsx_files) == 0:
     exit()
 
 if len(xlsx_files) > 1:
-    print("Enter the number of the xlsx file you want to use:")
+    print(f"Found {len(xlsx_files)} xlsx files.")
 
     for i, xlsx_file in enumerate(xlsx_files):
         print(f"{i + 1}. {xlsx_file}")
 
-    user_input = input()
+
+    print("")
+    user_input = input("Choose a file to generate snippets from (1): ")
     try:
+        if user_input == "":
+            user_input = 1
+
         user_input = int(user_input)
     except ValueError:
         print("Invalid input.")
@@ -102,13 +106,23 @@ else:
     xlsx_file = xlsx_files[0]
 
 print("")
-print("How many rows should be skipped at the beginning of the xlsx file?")
-skip_rows = input()
+skip_rows = input("Start at row (1): ")
 try:
-    skip_rows = int(skip_rows)
+    if skip_rows == "":
+        skip_rows = 1
+    else:
+        skip_rows = int(skip_rows) - 1
+
+        if skip_rows < 0:
+            skip_rows = 0
 except ValueError:
     print("Invalid input.")
     exit()
 
+print("")
+identifying_character = input("Identifying character (X): ")
+if identifying_character == "":
+    identifying_character = "X"
+
 print("Generating snippets...")
-generate_snippets_from_xlsx(xlsx_file, "output", skip_rows)
+generate_snippets_from_xlsx(xlsx_file, "output", skip_rows, identifying_character)
