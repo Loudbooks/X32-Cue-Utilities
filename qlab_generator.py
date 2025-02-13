@@ -13,7 +13,7 @@ def generate_cues(data_frame, identifying_character, midi_patch):
     for cue in data_frame.columns[first_column:]:
         channels_to_unmute, channels_to_mute = get_channel_mute_data(data_frame, cue, identifying_character)
         
-        create_cue(("Q" + str(cue)), str(cue), channels_to_unmute, str(len(channels_to_unmute) + len(channels_to_mute)))
+        create_cue(("Q" + str(cue)), str(cue), channels_to_unmute, str(len(channels_to_unmute) + len(channels_to_mute)), midi_patch)
 
         percent = round(((cue_number + 1) / total_cues) * 100)
         sys.stdout.write("\033[K") 
@@ -21,7 +21,7 @@ def generate_cues(data_frame, identifying_character, midi_patch):
 
         cue_number += 1
 
-    print("\nCreated {total_cues} cues.")
+    print(f"\nCreated {total_cues} cues.")
 
 def get_channel_mute_data(data_frame, cue, identifying_character):
     channels_to_unmute = []
@@ -78,9 +78,9 @@ tell application "QLab"
         set ccNumber to (ch - 1)
 
         if ch is in channelsToUnmute then
-            set ccValue to 127
-        else
             set ccValue to 0
+        else
+            set ccValue to 127
         end if
 
         make front workspace type "MIDI"
@@ -89,9 +89,9 @@ tell application "QLab"
 
         if targetCue is not missing value then
             tell targetCue
-                -- set patch to {MIDI_PATCH}
+                set midi patch number to {MIDI_PATCH}
                 set command to control_change
-                set channel to 1
+                set channel to 2
                 set byte one to ccNumber
                 set byte two to ccValue
                 set q number to ""
