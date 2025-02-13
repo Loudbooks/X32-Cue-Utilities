@@ -1,5 +1,6 @@
 from file_handler import read_excel_data
 from snippet_generator import generate_snippets
+from qlab_generator import generate_cues
 import os
 
 def locate_xlsx_files():
@@ -51,9 +52,18 @@ def main():
     if not identifying_character:
         identifying_character = "X"
 
+    print(f"Choose cue generation method:")
+    print("1. Generate X32 Snippets")
+    print("2. Generate QLab Cues")
+    method = get_user_input("Method (1): ", "1", validate_int_input)
+
     show_file_name = xlsx_file.replace(".xlsx", "")
     data_frame = read_excel_data(xlsx_file, skip_rows)
-    generate_snippets(data_frame, show_file_name, "output", identifying_character)
+
+    if method == "1":
+        generate_snippets(data_frame, show_file_name, "output", identifying_character)
+    else:
+        generate_cues(data_frame, identifying_character)
 
 
 if __name__ == "__main__":
