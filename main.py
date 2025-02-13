@@ -63,7 +63,9 @@ def main():
     if method == "1":
         generate_snippets(data_frame, show_file_name, "output", identifying_character)
     else:
-        generate_cues(data_frame, identifying_character)
+        midi_patch = get_user_input("MIDI Patch (1): ", "1", validate_int_input)
+
+        generate_cues(data_frame, identifying_character, midi_patch)
 
 
 if __name__ == "__main__":

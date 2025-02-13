@@ -2,11 +2,13 @@ import subprocess
 import pandas
 import sys
 
-def generate_cues(data_frame, identifying_character):
+def generate_cues(data_frame, identifying_character, midi_patch):
     cue_number = 0
 
     first_column = get_first_numeric_column(data_frame)
     total_cues = len(data_frame.columns[first_column:])
+
+    print(f"Creating {total_cues} cues...")
 
     for cue in data_frame.columns[first_column:]:
         channels_to_unmute, channels_to_mute = get_channel_mute_data(data_frame, cue, identifying_character)
@@ -39,7 +41,7 @@ def get_first_numeric_column(data_frame):
             return data_frame.columns.get_loc(column)
     return None
 
-def create_cue(cue_name, cue_number, channels_to_unmute, max_channels):
+def create_cue(cue_name, cue_number, channels_to_unmute, max_channels, midi_patch=1):
     channel_unmute_string = "{" + ", ".join(str(channel) for channel in channels_to_unmute) + "}"
     stdout, stderr = run_apple_script(
         apple_script
@@ -47,13 +49,11 @@ def create_cue(cue_name, cue_number, channels_to_unmute, max_channels):
             .replace("{CHANNELS_TO_UNMUTE}", channel_unmute_string)
             .replace("{CUE_NAME}", str(cue_name))
             .replace("{CUE_NUMBER}", str(cue_number))
+            .replace("{MIDI_PATCH}", str(midi_patch))
         )
     
     if stderr:
         print(stderr.decode("utf-8"))
-    else:
-        print(stdout.decode("utf-8"))
-    
 
 def run_apple_script(script):
     process = subprocess.Popen(['osascript', '-e', script], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -89,6 +89,7 @@ tell application "QLab"
 
         if targetCue is not missing value then
             tell targetCue
+                -- set patch to {MIDI_PATCH}
                 set command to control_change
                 set channel to 1
                 set byte one to ccNumber
