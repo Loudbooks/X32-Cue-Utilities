@@ -16,6 +16,14 @@ def get_user_input(prompt, default, validation_func=None):
         else:
             print("Invalid input. Please try again.")
 
+def validate_yes_no(input_str):
+    if input_str.lower() in ["y", "yes"]:
+        return True
+    elif input_str.lower() in ["n", "no"]:
+        return False
+    else:
+        return None 
+    
 def validate_int_input(input_str):
   try:
       int(input_str)
@@ -57,11 +65,13 @@ def main():
     print("2. Generate QLab Cues")
     method = get_user_input("Method (1): ", "1", validate_int_input)
 
+    use_dca = get_user_input(f"Would you like to use DCAs for ensamble? (Cast on 1, Ensemble on 2) (Y/N): ", "N", validate_yes_no)
+
     show_file_name = xlsx_file.replace(".xlsx", "")
     data_frame = read_excel_data(xlsx_file, skip_rows)
 
     if method == "1":
-        generate_snippets(data_frame, show_file_name, "output", identifying_character)
+        generate_snippets(data_frame, show_file_name, "output", identifying_character, use_dca)
     else:
         midi_patch = get_user_input("MIDI Patch (1): ", "1", validate_int_input)
 
