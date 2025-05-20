@@ -53,6 +53,11 @@ def format_cue_index(snippet):
 
 def pad_index(version, width=2):
     parts = version.split('.')
+    if len(parts) < 3:
+        parts += ['0'] * (3 - len(parts))
+    elif len(parts) > 3:
+        parts = parts[:3]
+        
     padded_parts = [part.zfill(width) for part in parts]
     return '.'.join(padded_parts)
 
