@@ -9,7 +9,7 @@ def locate_xlsx_files():
 def get_user_input(prompt, default, validation_func=None):
     while True:
         user_input = input(prompt)
-        if validation_func is None or validation_func(user_input):
+        if validation_func is None or validation_func(user_input) == True:
             return user_input
         elif user_input == "":
             return default
@@ -20,7 +20,7 @@ def validate_yes_no(input_str):
     if input_str.lower() in ["y", "yes"]:
         return True
     elif input_str.lower() in ["n", "no"]:
-        return False
+        return True
     else:
         return None 
     
@@ -29,7 +29,7 @@ def validate_int_input(input_str):
       int(input_str)
       return True
   except ValueError:
-      return False
+      return None
 
 def main():
     xlsx_files = locate_xlsx_files()
@@ -65,7 +65,12 @@ def main():
     print("2. Generate QLab Cues")
     method = get_user_input("Method (1): ", "1", validate_int_input)
 
-    use_dca = get_user_input(f"Would you like to use DCAs for ensamble? (Cast on 1, Ensemble on 2) (Y/N): ", "N", validate_yes_no)
+    use_dca = False
+
+    if get_user_input(f"Would you like to use DCAs for ensamble? (Cast on 1, Ensemble on 2) (Y/N): ", "N", validate_yes_no) == True:
+        use_dca = True
+    else:
+        use_dca = False
 
     show_file_name = xlsx_file.replace(".xlsx", "")
     data_frame = read_excel_data(xlsx_file, skip_rows)
